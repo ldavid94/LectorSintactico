@@ -1,0 +1,83 @@
+package codigo;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    private Symbol s;
+    
+    public void syntax_error(Symbol s){
+        this.s = s;
+    }
+
+    public Symbol getS(){
+        return this.s;
+}
+:};
+
+terminal Linea, Comillas, TipoDato, Cadena, If, Else, Do, While, For, Igual, 
+    Suma, Resta, Multiplicacion, Division, OperadoresLogico, Operadoresrelacional, 
+    Operadoresatribucion, Operadoresincremento, Operadoresbooleano, ParentesisAbierto, 
+    ParentesisCerrado, LlavesAbierto, LLavesCerrado, CorchetesAbierto, CorchetesCerrado, 
+    Main, PuntoComa, Identificador, Numero, ERROR;
+non terminal INICIO, SENTENCIA, DECLARACION, DECLARACION_FOR, IF, IF_ELSE,
+    WHILE, DO_WHILE, FOR, SENTENCIA_BOOLEANA, SENTENCIA_FOR;
+
+start with INICIO;
+
+INICIO ::= 
+    TipoDato Main ParentesisAbierto ParentesisCerrado LlavesAbierto SENTENCIA LLavesCerrado |
+    Main ParentesisAbierto ParentesisCerrado LlavesAbierto SENTENCIA LLavesCerrado
+;
+SENTENCIA ::= 
+    SENTENCIA DECLARACION |
+    DECLARACION |
+    SENTENCIA IF | 
+    IF |
+    SENTENCIA IF_ELSE |
+    IF_ELSE |
+    SENTENCIA WHILE |
+    WHILE |
+    SENTENCIA DO_WHILE
+    DO_WHILE |
+    SENTENCIA FOR |
+    FOR
+;
+DECLARACION ::= 
+    TipoDato Identificador PuntoComa | 
+    TipoDato Identificador Operadoresatribucion Numero PuntoComa |
+    TipoDato Identificador Igual Numero PuntoComa |
+    TipoDato Identificador Operadoresincremento PuntoComa | 
+    TipoDato Operadoresincremento Identificador PuntoComa | 
+    Cadena Identificador Operadoresatribucion Comillas Comillas PuntoComa |
+    Cadena Identificador Igual Comillas Comillas PuntoComa |
+    Cadena Identificador Operadoresatribucion Comillas Identificador Comillas PuntoComa |
+    Cadena Identificador Igual Comillas Identificador Comillas PuntoComa
+;
+IF ::= If ParentesisAbierto SENTENCIA_BOOLEANA ParentesisCerrado LlavesAbierto SENTENCIA LLavesCerrado
+;
+SENTENCIA_BOOLEANA ::= 
+    Operadoresbooleano | 
+    Identificador Operadoresrelacional Operadoresbooleano |
+    Identificador Operadoresrelacional Numero |
+    Identificador Operadoresrelacional Identificador |
+    Identificador Operadoresrelacional Comillas Comillas |
+    Identificador Operadoresrelacional Comillas Identificador Comillas
+;
+IF_ELSE ::= If ParentesisAbierto SENTENCIA_BOOLEANA ParentesisCerrado LlavesAbierto SENTENCIA LLavesCerrado Else LlavesAbierto SENTENCIA LLavesCerrado
+;
+WHILE ::= While ParentesisAbierto SENTENCIA_BOOLEANA ParentesisCerrado LlavesAbierto SENTENCIA LLavesCerrado
+;
+DO_WHILE ::= Do LlavesAbierto SENTENCIA LLavesCerrado While ParentesisAbierto SENTENCIA_BOOLEANA ParentesisCerrado PuntoComa
+;
+FOR ::= For ParentesisAbierto SENTENCIA_FOR ParentesisCerrado LlavesAbierto SENTENCIA LLavesCerrado
+;
+SENTENCIA_FOR ::=
+    TipoDato Identificador Igual Numero PuntoComa SENTENCIA_BOOLEANA PuntoComa DECLARACION_FOR |
+    Identificador Igual Numero PuntoComa SENTENCIA_BOOLEANA PuntoComa DECLARACION_FOR
+;
+DECLARACION_FOR ::= 
+    Identificador Operadoresatribucion Numero |
+    Identificador Operadoresincremento | 
+    Operadoresincremento Identificador
+;
